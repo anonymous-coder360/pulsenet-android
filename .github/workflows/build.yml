@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -29,7 +29,7 @@ jobs:
           npm install --legacy-peer-deps
           npm install --save-dev @capacitor/cli @capacitor/core @capacitor/android
 
-      - name: Build Web Assets & Sync Capacitor
+      - name: Build Web Assets
         run: |
           npm run build
           rm -rf android
@@ -37,12 +37,10 @@ jobs:
           npx @capacitor/cli sync android
 
       - name: Build Debug APK via Gradle
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload Generated APK
         uses: actions/upload-artifact@v4
