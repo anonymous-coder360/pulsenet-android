@@ -1,9 +1,12 @@
-name: Build Android APK
+name: Build and Release Android APK
 
 on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -42,8 +45,30 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - name: Upload Finished APK
-        uses: actions/upload-artifact@v4
+      - name: Rename APK for Users
+        run: |
+          mkdir -p release-assets
+          cp android/app/build/outputs/apk/debug/app-debug.apk release-assets/PulseNet-v12.0.apk
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: PulseNet-Release-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          tag_name: v12.0
+          name: "PulseNet v12.0 Official Release"
+          body: |
+            ### 📱 PulseNet v12.0 (Zero-Knowledge Social App)
+            
+            Welcome to the official Android release of PulseNet!
+            
+            #### 🌟 Features:
+            - **End-to-End Encrypted Whispers (AES-256 / SHA-256)**
+            - **Self-Destructing Ghost Mode Messages**
+            - **4-Digit Vault PIN Security**
+            - **Sparks Reels & Vertical Video Player**
+            - **24/7 Real-Time Cloud Database Sync**
+            
+            #### 📥 Download Instructions:
+            Download **`PulseNet-v12.0.apk`** below and install it directly on your Android phone.
+          files: release-assets/PulseNet-v12.0.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
