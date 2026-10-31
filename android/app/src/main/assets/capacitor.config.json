@@ -1,0 +1,20 @@
+{
+	"appId": "com.pulsenet.app",
+	"appName": "PulseNet",
+	"webDir": "build",
+	"bundledWebRuntime": false,
+	"plugins": {
+		"PushNotifications": {
+			"presentationOptions": [
+				"badge",
+				"sound",
+				"alert"
+			]
+		}
+	},
+	"android": {
+		"allowMixedContent": true,
+		"captureInput": true,
+		"webContentsDebuggingEnabled": true
+	}
+}
