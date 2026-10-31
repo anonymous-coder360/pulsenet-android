@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -27,22 +27,22 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install --legacy-peer-deps
-          npm install --save-dev @capacitor/cli @capacitor/core @capacitor/android
+          npm install --save-dev --legacy-peer-deps @capacitor/cli@^6.0.0 @capacitor/core@^6.0.0 @capacitor/android@^6.0.0
 
-      - name: Build Web Assets
+      - name: Build Web Assets & Generate Android Shell
         run: |
           npm run build
           rm -rf android
-          npx @capacitor/cli add android
-          npx @capacitor/cli sync android
+          npx cap add android
+          npx cap sync android
 
-      - name: Build Debug APK via Gradle
+      - name: Compile Debug APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - name: Upload Generated APK
+      - name: Upload Finished APK
         uses: actions/upload-artifact@v4
         with:
           name: PulseNet-Release-APK
